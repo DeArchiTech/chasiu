@@ -1,4 +1,4 @@
-# android-seed
+ChaSiu Project
 
 A fresh Android project with tests already set up.
 
