@@ -1,0 +1,17 @@
+{
+  "success": {
+    "total": 2
+  },
+  "contents": {
+    "users": [
+      {
+        "id": 0,
+        "name": "David Chan"
+      },
+      {
+        "id": 1,
+        "name": "Eve"
+      }
+    ]
+  }
+}

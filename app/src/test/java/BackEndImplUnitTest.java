@@ -1,13 +1,30 @@
+import android.content.Context;
 import android.os.Build;
+
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.stubbing.answers.ThrowsException;
+import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowApplication;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+
 import chasiu.Model.Model;
 import chasiu.Network.BackEndService;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import rx.Observable;
+import rx.Subscriber;
 
 /**
  * Created by Davix on 3/2/16.
@@ -18,6 +35,7 @@ import rx.Observable;
 public class BackEndImplUnitTest {
 
     BackEndService service;
+    MockWebServer server;
 
     String userID = "0";
     String email = "davidkwokhochan@gmail.com";
@@ -32,11 +50,62 @@ public class BackEndImplUnitTest {
     }
 
     @Test
-    public void testSignUpUser() {
+    public void testSignUpUser() throws InterruptedException{
 
         this.service = BackEndService.Companion.create();
+        this.server = new MockWebServer();
+
+        final CountDownLatch signal = new CountDownLatch(1);
+        Model.User user = new Model.User("david" , "0");
+        ObjectMapper mapper = new ObjectMapper();
+        String responseString = "";
+
+        try{
+
+            responseString = mapper.writeValueAsString(user);
+
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+        this.server.enqueue(new MockResponse()
+                .setResponseCode(200)
+                .setBody(responseString));
+
         Observable<Model.User> observable = this.service.signUpUser(this.email ,this.password);
         assert(observable != null);
+
+        observable.subscribe(new Subscriber<Model.User>() {
+            @Override
+            public void onCompleted() {
+
+                assert (true);
+                signal.countDown();
+                //Pass case, doesn't passes?
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+                assert (false);
+                System.out.print(e.fillInStackTrace());
+                signal.countDown();
+                //Fail case passes
+
+            }
+
+            @Override
+            public void onNext(Model.User user) {
+
+            }
+        });
+        signal.await();
 
     }
 
@@ -46,18 +115,19 @@ public class BackEndImplUnitTest {
         this.service = BackEndService.Companion.create();
         Observable<Model.User> observable = this.service.signUpUser(this.email ,this.password);
         assert(observable != null);
+
+        Model.User user = null;
+
+        assert(user!=null);
+
     }
 
     @Test
-    public void testGetHomeScreen() {
+    public void testGetUsers() {
 
         //Test Logged In
         this.service = BackEndService.Companion.create();
-        Observable<JSONObject> observable = this.service.getHomeScreen(true);
-        assert(observable != null);
-
-        //Test Logged Out
-        observable = this.service.getHomeScreen(false);
+        Observable<Model.User[]> observable= this.service.getUsers(new JSONObject());
         assert(observable != null);
 
     }
@@ -69,6 +139,9 @@ public class BackEndImplUnitTest {
         Observable<Model.User> observable = this.service.getUserInfo(this.userID);
         assert (observable != null);
 
+        Model.User user = null;
+
+        assert(user!=null);
     }
 
 }
