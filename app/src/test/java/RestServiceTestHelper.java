@@ -3,7 +3,12 @@
  */
 import android.content.Context;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -57,6 +62,26 @@ public class RestServiceTestHelper {
 
         }
 
+    }
+
+    public static String getJsonString(Object object){
+        ObjectMapper mapper = new ObjectMapper();
+        String responseString = "";
+
+        try{
+
+            responseString = mapper.writeValueAsString(object);
+
+        } catch (JsonGenerationException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        }
+
+        return responseString;
     }
 
 }

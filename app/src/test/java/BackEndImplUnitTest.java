@@ -1,4 +1,3 @@
-import android.content.Context;
 import android.os.Build;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
@@ -8,15 +7,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.internal.stubbing.answers.ThrowsException;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowApplication;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
@@ -25,7 +19,6 @@ import chasiu.Network.BackEndService;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import rx.Observable;
-import rx.Subscriber;
 import rx.observers.TestSubscriber;
 
 /**
@@ -59,23 +52,8 @@ public class BackEndImplUnitTest {
         this.service = BackEndService.Companion.create();
         this.server = new MockWebServer();
 
-        final CountDownLatch signal = new CountDownLatch(1);
         Model.User user = new Model.User(this.username , this.password);
-        ObjectMapper mapper = new ObjectMapper();
-        String responseString = "";
-
-        try{
-
-            responseString = mapper.writeValueAsString(user);
-
-        } catch (JsonGenerationException e) {
-            e.printStackTrace();
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
+        String responseString = RestServiceTestHelper.getJsonString(user);
 
         //Enqueue Server Response
         this.server.enqueue(new MockResponse()
@@ -87,7 +65,6 @@ public class BackEndImplUnitTest {
 
         //Test Observable
         assert(observable != null);
-
         observable.subscribe(testSubscriber);
 
         //Test Observable results
