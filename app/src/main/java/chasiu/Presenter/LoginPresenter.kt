@@ -1,5 +1,7 @@
 package chasiu.Presenter
+import chasiu.Model.Model
 import chasiu.View.LoginView
+import rx.Observable
 
 /**
  * Created by Davix on 3/4/16.
@@ -13,4 +15,5 @@ interface LoginPresenter {
 
     fun onTakeView(view: LoginView)
 
+    fun onUserEvent(event : Any) : Observable<Model.User>?
 }

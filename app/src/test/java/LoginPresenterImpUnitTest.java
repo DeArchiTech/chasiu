@@ -1,19 +1,17 @@
 import android.os.Build;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.util.Arrays;
-
 import chasiu.Model.Model;
 import chasiu.Network.BackEndService;
 import chasiu.Network.MockBackEndService;
-import chasiu.Presenter.LoginPresenter;
 import chasiu.Presenter.LoginPresenterImpl;
-import chasiu.View.LoginForm;
+import chasiu.Form.LoginForm;
 import chasiu.View.LoginView;
 import rx.Observable;
 import rx.observers.TestSubscriber;
@@ -29,11 +27,44 @@ public class LoginPresenterImpUnitTest {
     String username = "david";
     String email = "davidkwokhochan@gmail.com";
     String password = "abcd1234";
+    LoginView mockLoginView = null;
+    BackEndService mockBackendService = null;
+    LoginPresenterImpl presenter = null;
+
+    @Before
+    public void setUp(){
+
+        mockLoginView = new LoginView() {
+            @Override
+            public void onUserLoginRequest() {
+
+            }
+
+            @Override
+            public void onLoginSuccess(@NotNull Model.User user) {
+
+            }
+
+            @Override
+            public void onLoginError(@NotNull Throwable error) {
+
+            }
+
+            @NotNull
+            @Override
+            public LoginForm getUserLoginInput() {
+                return null;
+            }
+        };
+        mockBackendService = new MockBackEndService();
+        presenter = new LoginPresenterImpl();
+        presenter.setBackEndService(mockBackendService);
+
+    }
 
     @Test
     public void testConstructor(){
 
-        LoginPresenter presenter = new LoginPresenterImpl();
         assert(presenter != null);
 
     }
@@ -41,34 +72,22 @@ public class LoginPresenterImpUnitTest {
     @Test
     public void testOnTakeView(){
 
-        //Set Up
-        LoginPresenter presenter = new LoginPresenterImpl();
-        LoginView mockLoginView = new LoginView() {
-
-            @Override
-            public void onUserLoginRequest(@NotNull LoginForm form) {
-
-            }
-
-            @NotNull
-            @Override
-            public Model.User onLoginSuccess() {
-                return null;
-            }
-
-            @NotNull
-            @Override
-            public Throwable onLoginErrpr() {
-                return null;
-            }
-        };
-
         //Trigger action and don't break
         presenter.onTakeView(mockLoginView);
         LoginForm loginForm = new LoginForm(this.email , this.password);
-        mockLoginView.onUserLoginRequest(loginForm);
-
+        mockLoginView.onUserLoginRequest();
         assert(presenter!=null);
     }
 
+    @Test
+    public void testOnUserEvent(){
+
+        presenter.onTakeView(mockLoginView);
+        Object event = new Object();
+        Observable<Model.User> observable = presenter.onUserEvent(event);
+        TestSubscriber<Model.User> subscriber = new TestSubscriber<Model.User>();
+        observable.subscribe(subscriber);
+        subscriber.assertNoErrors();
+        subscriber.assertCompleted();
+    }
 }

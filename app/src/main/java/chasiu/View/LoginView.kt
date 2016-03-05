@@ -1,5 +1,6 @@
 package chasiu.View
 
+import chasiu.Form.LoginForm
 import chasiu.Model.Model
 
 /**
@@ -7,13 +8,16 @@ import chasiu.Model.Model
  */
 interface LoginView {
 
-    fun onUserLoginRequest(form : LoginForm)
+    fun onUserLoginRequest()
     //on user triggered login action
 
-    fun onLoginSuccess(): Model.User
+    fun onLoginSuccess(user : Model.User)
     //OnLoginSuccess
 
-    fun onLoginErrpr(): Throwable
+    fun onLoginError(error : Throwable)
     //OnLoginError
+
+    fun getUserLoginInput(): LoginForm
+    //Get User's Inputed Login Data
 
 }

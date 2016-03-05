@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,21 +16,26 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.NotNull;
 
+import chasiu.Form.LoginForm;
 import chasiu.Model.Model;
+import chasiu.Presenter.LoginPresenter;
+import chasiu.Presenter.LoginPresenterImpl;
 import chasiu.R;
-import chasiu.View.LoginView;
 
-public class LoginActivity extends ActionBarActivity implements LoginView {
+public class LoginActivity extends AppCompatActivity implements LoginView {
 
 	private Toolbar toolbar;
 	private DrawerLayout drawerLayout;
+	private LoginForm loginForm = null;
 	private ActionBarDrawerToggle drawerToggle;
+	private LoginPresenter presenter;
+	public boolean loginResponseRecieved = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 
 		toolbar = (Toolbar) findViewById(R.id.toolbar);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -54,6 +60,8 @@ public class LoginActivity extends ActionBarActivity implements LoginView {
 					.add(R.id.container, new PlaceholderFragment())
 					.commit();
 		}
+
+		this.presenter = new LoginPresenterImpl();
 	}
 
 	@Override
@@ -107,22 +115,45 @@ public class LoginActivity extends ActionBarActivity implements LoginView {
 
 	@NotNull
 	@Override
-	public Model.User onLoginSuccess() {
+	public void onLoginSuccess(Model.User user){
 		//TODO
-		return null;
+		//Display a message to user
+		this.loginResponseRecieved = true;
 	}
 
 	@NotNull
 	@Override
-	public Throwable onLoginErrpr() {
+	public void onLoginError(Throwable e){
 		//TODO
-		return null;
+		//Display a message to user
+		this.loginResponseRecieved = true;
+
 	}
 
 	@Override
-	public void onUserLoginRequest(@NotNull LoginForm form) {
-		//TODO
-		//Call presenter to handle this uesr request
+	public void onUserLoginRequest() {
+		//Call presenter to handle this user request
+		this.presenter.onUserEvent(new Object());
+	}
+
+	@NotNull
+	@Override
+	public LoginForm getUserLoginInput() {
+
+		if(this.loginForm!=null){
+			return this.loginForm;
+		}else{
+			return new LoginForm("" , "");
+		}
+
+	}
+
+	public LoginPresenter getPresenter() {
+		return presenter;
+	}
+
+	public void setPresenter(LoginPresenter presenter) {
+		this.presenter = presenter;
 	}
 
 }
