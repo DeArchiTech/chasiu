@@ -23,12 +23,20 @@ import rx.observers.TestSubscriber;
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = Build.VERSION_CODES.LOLLIPOP)
-public class MainPresenterImpUnitTest {
+public class LoginPresenterImpUnitTest {
 
     String userID = "0";
     String username = "david";
     String email = "davidkwokhochan@gmail.com";
     String password = "abcd1234";
+
+    @Test
+    public void testConstructor(){
+
+        LoginPresenter presenter = new LoginPresenterImpl();
+        assert(presenter != null);
+
+    }
 
     @Test
     public void testOnTakeView(){
@@ -60,6 +68,7 @@ public class MainPresenterImpUnitTest {
         LoginForm loginForm = new LoginForm(this.email , this.password);
         mockLoginView.onUserLoginRequest(loginForm);
 
+        assert(presenter!=null);
     }
 
 }
