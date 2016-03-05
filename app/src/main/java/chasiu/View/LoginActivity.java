@@ -1,5 +1,6 @@
 package chasiu.View;
 
+import android.app.Activity;
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -22,7 +23,7 @@ import chasiu.Presenter.LoginPresenter;
 import chasiu.Presenter.LoginPresenterImpl;
 import chasiu.R;
 
-public class LoginActivity extends AppCompatActivity implements LoginView {
+public class LoginActivity extends Activity implements LoginView {
 
 	private Toolbar toolbar;
 	private DrawerLayout drawerLayout;
@@ -41,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		if (toolbar != null) {
 			toolbar.setTitle(R.string.app_name);
-			setSupportActionBar(toolbar);
+			//setSupportActionBar(toolbar);
 		}
 		drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close) {
 			@Override
@@ -56,10 +57,10 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 		drawerLayout.setDrawerListener(drawerToggle);
 
 		if (savedInstanceState == null) {
-			getSupportFragmentManager().beginTransaction()
+			/*getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment())
 					.commit();
-		}
+	*/	}
 
 		this.presenter = new LoginPresenterImpl();
 	}
