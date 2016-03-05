@@ -100,4 +100,5 @@ public class MainActivity extends ActionBarActivity {
 			return inflater.inflate(R.layout.fragment_main, container, false);
 		}
 	}
+
 }

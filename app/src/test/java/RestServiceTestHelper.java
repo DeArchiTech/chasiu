@@ -33,4 +33,30 @@ public class RestServiceTestHelper {
         return ret;
     }
 
+    public static boolean stringHasUpper(String input){
+
+        //Error Case
+        if(input == null || input.length()<1){
+            return false;
+        }
+        else{
+
+            //Algo convert first char to ACSII and see if it lies in the interval if we convert
+            //A and Z to its ACSII equivalent
+            int inputACSII = input.charAt(0);
+            int beginningInterval = 'A';
+            int endInterval = 'Z';
+
+            //Base case
+            if(inputACSII >= beginningInterval && inputACSII <= endInterval){
+                return true;
+            }else{
+                //Recursive Case
+                return stringHasUpper(input.substring(1));
+            }
+
+        }
+
+    }
+
 }

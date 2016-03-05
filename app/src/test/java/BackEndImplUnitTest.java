@@ -17,6 +17,7 @@ import org.robolectric.shadows.ShadowApplication;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
 import chasiu.Model.Model;
@@ -25,6 +26,7 @@ import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import rx.Observable;
 import rx.Subscriber;
+import rx.observers.TestSubscriber;
 
 /**
  * Created by Davix on 3/2/16.
@@ -38,6 +40,7 @@ public class BackEndImplUnitTest {
     MockWebServer server;
 
     String userID = "0";
+    String username = "david";
     String email = "davidkwokhochan@gmail.com";
     String password = "abcd1234";
 
@@ -52,11 +55,12 @@ public class BackEndImplUnitTest {
     @Test
     public void testSignUpUser() throws InterruptedException{
 
+        //Set Up
         this.service = BackEndService.Companion.create();
         this.server = new MockWebServer();
 
         final CountDownLatch signal = new CountDownLatch(1);
-        Model.User user = new Model.User("david" , "0");
+        Model.User user = new Model.User(this.username , this.password);
         ObjectMapper mapper = new ObjectMapper();
         String responseString = "";
 
@@ -73,40 +77,23 @@ public class BackEndImplUnitTest {
 
         }
 
+        //Enqueue Server Response
         this.server.enqueue(new MockResponse()
                 .setResponseCode(200)
                 .setBody(responseString));
 
-        Observable<Model.User> observable = this.service.signUpUser(this.email ,this.password);
+        Observable<Model.User> observable = this.service.signUpUser(this.username ,this.password);
+        TestSubscriber<Model.User> testSubscriber = new TestSubscriber<Model.User>();
+
+        //Test Observable
         assert(observable != null);
 
-        observable.subscribe(new Subscriber<Model.User>() {
-            @Override
-            public void onCompleted() {
+        observable.subscribe(testSubscriber);
 
-                assert (true);
-                signal.countDown();
-                //Pass case, doesn't passes?
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-                assert (false);
-                System.out.print(e.fillInStackTrace());
-                signal.countDown();
-                //Fail case passes
-
-            }
-
-            @Override
-            public void onNext(Model.User user) {
-
-            }
-        });
-        signal.await();
-
+        //Test Observable results
+        testSubscriber.assertNoErrors();
+        testSubscriber.assertCompleted();
+        testSubscriber.assertReceivedOnNext(Arrays.asList(user));
     }
 
     @Test
