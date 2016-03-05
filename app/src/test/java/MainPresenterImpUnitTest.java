@@ -1,6 +1,6 @@
-import android.graphics.AvoidXfermode;
 import android.os.Build;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -11,9 +11,10 @@ import java.util.Arrays;
 import chasiu.Model.Model;
 import chasiu.Network.BackEndService;
 import chasiu.Network.MockBackEndService;
-import chasiu.Presenter.MainPresenter;
-import chasiu.Presenter.MainPresenterImpl;
+import chasiu.Presenter.LoginPresenter;
+import chasiu.Presenter.LoginPresenterImpl;
 import chasiu.View.LoginForm;
+import chasiu.View.LoginView;
 import rx.Observable;
 import rx.observers.TestSubscriber;
 
@@ -30,41 +31,34 @@ public class MainPresenterImpUnitTest {
     String password = "abcd1234";
 
     @Test
-    public void testGetLoginResult(){
+    public void testOnTakeView(){
 
         //Set Up
-        BackEndService sampleService = new MockBackEndService();
-        BackEndService presenterService = new MockBackEndService();
+        LoginPresenter presenter = new LoginPresenterImpl();
+        LoginView mockLoginView = new LoginView() {
 
-        MainPresenter presenter = new MainPresenterImpl();
-        LoginForm form = new LoginForm(this.email , this.password);
-        Observable<Model.User> observable = presenter.getLogInResult(form);
-        TestSubscriber<Model.User> testSubscriber = new TestSubscriber<Model.User>();
+            @Override
+            public void onUserLoginRequest(@NotNull LoginForm form) {
 
-        //Test Observables
-        assert(observable != null);
-        observable.subscribe(testSubscriber);
+            }
 
-        testSubscriber.assertNoErrors();
-        testSubscriber.assertCompleted();
+            @NotNull
+            @Override
+            public Model.User onLoginSuccess() {
+                return null;
+            }
 
-        //Test The object thats emitted
-        Model.User firstResult = sampleService.getUserInfo("0").toBlocking().first();
-        testSubscriber.assertReceivedOnNext(Arrays.asList(firstResult));
+            @NotNull
+            @Override
+            public Throwable onLoginErrpr() {
+                return null;
+            }
+        };
 
-    }
-
-    @Test
-    public void testSignUpResult(){
-
-        assert(false);
-
-    }
-
-    @Test
-    public void testGetUsers(){
-
-        assert(false);
+        //Trigger action and don't break
+        presenter.onTakeView(mockLoginView);
+        LoginForm loginForm = new LoginForm(this.email , this.password);
+        mockLoginView.onUserLoginRequest(loginForm);
 
     }
 

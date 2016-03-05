@@ -1,4 +1,4 @@
-package chasiu;
+package chasiu.View;
 
 import android.content.res.Configuration;
 import android.support.v4.widget.DrawerLayout;
@@ -13,13 +13,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class MainActivity extends ActionBarActivity {
+import org.jetbrains.annotations.NotNull;
 
+import chasiu.Model.Model;
+import chasiu.R;
+import chasiu.View.LoginView;
+
+public class LoginActivity extends ActionBarActivity implements LoginView {
 
 	private Toolbar toolbar;
 	private DrawerLayout drawerLayout;
 	private ActionBarDrawerToggle drawerToggle;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,26 @@ public class MainActivity extends ActionBarActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			return inflater.inflate(R.layout.fragment_main, container, false);
 		}
+	}
+
+	@NotNull
+	@Override
+	public Model.User onLoginSuccess() {
+		//TODO
+		return null;
+	}
+
+	@NotNull
+	@Override
+	public Throwable onLoginErrpr() {
+		//TODO
+		return null;
+	}
+
+	@Override
+	public void onUserLoginRequest(@NotNull LoginForm form) {
+		//TODO
+		//Call presenter to handle this uesr request
 	}
 
 }
