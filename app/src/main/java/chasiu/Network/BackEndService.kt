@@ -42,7 +42,7 @@ interface BackEndService {
     @Headers("User-Agent: YKode Sample App/1.0")
     @FormUrlEncoded
     @POST("/post")
-    public fun getUsers(@Field("QueryParam") loggedIn: JSONObject): Observable<Array<User>>
+    public fun getUsers(@Field("QueryParam") loggedIn: JSONObject): Observable<List<User>>
 
     companion object {
 

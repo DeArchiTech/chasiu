@@ -5,13 +5,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import chasiu.Model.Model;
@@ -37,10 +40,23 @@ public class BackEndImplUnitTest {
     String email = "davidkwokhochan@gmail.com";
     String password = "abcd1234";
 
+    MockResponse userMockResponse;
+    Model.User user;
+    @Before
+    public void setUp(){
+
+        this.service = BackEndService.Companion.create();
+        this.server = new MockWebServer();
+        this.user = new Model.User(this.username , this.password);
+        this.userMockResponse = new MockResponse()
+                .setResponseCode(200)
+                .setBody(RestServiceTestHelper.getJsonString(user));
+
+    }
+
     @Test
     public void testConstructor() {
 
-        this.service = BackEndService.Companion.create();
         assert(this.service != null);
 
     }
@@ -48,17 +64,8 @@ public class BackEndImplUnitTest {
     @Test
     public void testSignUpUser() throws InterruptedException{
 
-        //Set Up
-        this.service = BackEndService.Companion.create();
-        this.server = new MockWebServer();
-
-        Model.User user = new Model.User(this.username , this.password);
-        String responseString = RestServiceTestHelper.getJsonString(user);
-
         //Enqueue Server Response
-        this.server.enqueue(new MockResponse()
-                .setResponseCode(200)
-                .setBody(responseString));
+        this.server.enqueue(this.userMockResponse);
 
         Observable<Model.User> observable = this.service.signUpUser(this.username ,this.password);
         TestSubscriber<Model.User> testSubscriber = new TestSubscriber<Model.User>();
@@ -70,42 +77,80 @@ public class BackEndImplUnitTest {
         //Test Observable results
         testSubscriber.assertNoErrors();
         testSubscriber.assertCompleted();
-        testSubscriber.assertReceivedOnNext(Arrays.asList(user));
+        testSubscriber.assertReceivedOnNext(Arrays.asList(this.user));
     }
 
     @Test
     public void testLoginUser() {
 
-        this.service = BackEndService.Companion.create();
-        Observable<Model.User> observable = this.service.signUpUser(this.email ,this.password);
+        //Enqueue Server Response
+        this.server.enqueue(this.userMockResponse);
+
+        Observable<Model.User> observable = this.service.logInUser(this.username, this.password);
+        TestSubscriber<Model.User> testSubscriber = new TestSubscriber<Model.User>();
+
+        //Test Observable
         assert(observable != null);
+        observable.subscribe(testSubscriber);
 
-        Model.User user = null;
-
-        assert(user!=null);
-
-    }
-
-    @Test
-    public void testGetUsers() {
-
-        //Test Logged In
-        this.service = BackEndService.Companion.create();
-        Observable<Model.User[]> observable= this.service.getUsers(new JSONObject());
-        assert(observable != null);
+        //Test Observable results
+        testSubscriber.assertNoErrors();
+        testSubscriber.assertCompleted();
+        testSubscriber.assertReceivedOnNext(Arrays.asList(this.user));
 
     }
 
     @Test
     public void testGetUserInfo() {
 
-        this.service = BackEndService.Companion.create();
-        Observable<Model.User> observable = this.service.getUserInfo(this.userID);
-        assert (observable != null);
+        //Enqueue Server Response
+        this.server.enqueue(this.userMockResponse);
+        Observable<Model.User> observable = this.service.getUserInfo("");
+        TestSubscriber<Model.User> testSubscriber = new TestSubscriber<Model.User>();
 
-        Model.User user = null;
+        //Test Observable
+        assert(observable != null);
+        observable.subscribe(testSubscriber);
 
-        assert(user!=null);
+        //Desired Emitted result
+        List<Model.User> listOfUsers = new ArrayList<Model.User>();
+        listOfUsers.add(this.user);
+
+        //Test Observable results
+        testSubscriber.assertNoErrors();
+        testSubscriber.assertCompleted();
+        testSubscriber.assertValueCount(1);
     }
+
+    @Test
+    public void testGetUsers() {
+
+        //Enqueue Server Response
+        this.server.enqueue(this.userMockResponse);
+        JSONObject searchParm = null;
+
+        try{
+            searchParm = new JSONObject("");
+        }catch (Exception e){
+
+        }
+        Observable<List<Model.User>> observable = this.service.getUsers(searchParm);
+        TestSubscriber<List<Model.User>> testSubscriber = new TestSubscriber<List<Model.User>>();
+
+        //Test Observable
+        assert(observable != null);
+        observable.subscribe(testSubscriber);
+
+        //Desired Emitted result
+        List<Model.User> listOfUsers = new ArrayList<Model.User>();
+        listOfUsers.add(this.user);
+
+        //Test Observable results
+        testSubscriber.assertNoErrors();
+        testSubscriber.assertCompleted();
+        testSubscriber.assertReceivedOnNext(Arrays.asList(listOfUsers));
+    }
+
+
 
 }

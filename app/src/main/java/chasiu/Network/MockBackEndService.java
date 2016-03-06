@@ -3,6 +3,9 @@ package chasiu.Network;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import chasiu.Model.Model;
 import retrofit.http.Field;
 import rx.Observable;
@@ -35,11 +38,11 @@ public class MockBackEndService implements BackEndService{
 
     @NotNull
     @Override
-    public Observable<Model.User[]> getUsers(@Field("QueryParam") @NotNull JSONObject loggedIn) {
+    public Observable<List<Model.User>> getUsers(@Field("QueryParam") @NotNull JSONObject loggedIn) {
 
-        Model.User[] users = new Model.User[2];
-        users[0] = getBaseUser();
-        return Observable.just(users);
+        List<Model.User> result = new ArrayList<Model.User>();
+        result.add(getBaseUser());
+        return Observable.just(result);
 
     }
 

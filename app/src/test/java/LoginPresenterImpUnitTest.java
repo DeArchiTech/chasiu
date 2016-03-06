@@ -53,8 +53,9 @@ public class LoginPresenterImpUnitTest {
             @NotNull
             @Override
             public LoginForm getUserLoginInput() {
-                return null;
+                return new LoginForm("david" , "0");
             }
+
         };
         mockBackendService = new MockBackEndService();
         presenter = new LoginPresenterImpl();
