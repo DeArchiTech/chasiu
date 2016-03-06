@@ -3,125 +3,126 @@ apply plugin: 'kotlin-android'
 
 android {
 
-	compileSdkVersion 23
-	buildToolsVersion "23.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
-	defaultConfig {
-		applicationId "com.example.android.app"
+    defaultConfig {
+        applicationId "com.example.android.app"
 
-		minSdkVersion 10
-		targetSdkVersion 23
+        minSdkVersion 10
+        targetSdkVersion 23
 
-		versionCode 1
-		versionName "0.0.1-SNAPSHOT"
+        versionCode 1
+        versionName "0.0.1-SNAPSHOT"
 
-		// that's for espresso.
-		testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-		multiDexEnabled true
-	}
+        // that's for espresso.
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
 
-	packagingOptions {
-		exclude 'LICENSE.txt'
-		exclude 'META-INF/LICENSE'
-		exclude 'META-INF/LICENSE.txt'
-		exclude 'META-INF/NOTICE'
-	}
-	sourceSets {
-		main.java.srcDirs += 'src/main/kotlin'
-	}
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
 
-	// app
-	compile 'com.android.support:support-annotations:23.2.0'
-	compile 'com.android.support:support-v4:23.2.0'
-	compile 'com.android.support:appcompat-v7:23.2.0'
-	compile('com.google.android.gms:play-services:7.+') {
-		exclude module: 'support-v4'
-	}
-	provided 'com.squareup.dagger:dagger-compiler:1.2.2'
-	compile 'com.squareup.dagger:dagger:1.2.2'
-	compile 'de.greenrobot:eventbus:2.4.0'
+    // app
+    compile('com.google.android.gms:play-services:7.+') {
+        exclude module: 'support-v4'
+    }
+    provided 'com.squareup.dagger:dagger-compiler:1.2.2'
 
+    // robolectric
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:1.9.5"
+    testCompile 'com.squareup:fest-android:1.0.8'
+    testCompile "org.robolectric:robolectric:3.0"
+    testCompile 'com.squareup.okhttp3:mockwebserver:3.2.0'
 
-	// robolectric
-	testCompile 'junit:junit:4.12'
-	testCompile "org.mockito:mockito-core:1.9.5"
-	testCompile 'com.squareup:fest-android:1.0.8'
-	testCompile "org.robolectric:robolectric:3.0"
-	testCompile 'com.squareup.okhttp3:mockwebserver:3.2.0'
+    // espresso	compile
+    androidTestCompile 'com.android.support:support-annotations:23.2.0'
+    androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
+    androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
+    androidTestCompile 'com.android.support.test:runner:0.2'
+    androidTestCompile 'com.android.support.test:rules:0.2'
 
-	// espresso	compile
-	androidTestCompile 'com.android.support:support-annotations:23.2.0'
-	androidTestCompile 'org.hamcrest:hamcrest-core:1.1'
-	androidTestCompile 'org.hamcrest:hamcrest-library:1.1'
-	androidTestCompile 'org.hamcrest:hamcrest-integration:1.1'
-	androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
-	androidTestCompile 'com.android.support.test:runner:0.2'
-	androidTestCompile 'com.android.support.test:rules:0.2'
+    //features
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-
-	//features
-	compile 'io.reactivex:rxjava:1.0.8'
-	compile 'io.reactivex:rxandroid:0.24.0'
-	compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
-	compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
-	compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
-	compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-	compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
-	compile 'com.squareup.okhttp:okhttp:2.2.0'
-	compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-	compile 'com.pawegio.kandroid:kandroid:0.5.0@aar'
-	compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-	compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
-
+    compile 'com.android.support:support-annotations:23.2.0'
+    compile 'com.android.support:support-v4:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.squareup.dagger:dagger:1.2.2'
+    compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'io.reactivex:rxjava:1.0.8'
+    compile 'io.reactivex:rxandroid:0.24.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    compile 'com.squareup.okhttp:okhttp:2.2.0'
+    compile 'com.pawegio.kandroid:kandroid:0.5.0@aar'
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
+    compile 'com.google.android.gms:play-services-identity:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'
 }
 
 
 apply plugin: 'jacoco'
 
 jacoco {
-	toolVersion = "0.7.1.201405082137"
+    toolVersion = "0.7.1.201405082137"
 }
 
 def coverageSourceDirs = [
-		'../app/src/main/java'
+        '../app/src/main/java'
 ]
 
-task jacocoTestReport(type:JacocoReport, dependsOn: "testDebug") {
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebug") {
 
-	group = "Reporting"
-	description = "Generate Jacoco coverage reports"
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
 
-	classDirectories = fileTree(
-			dir: '../app/build/intermediates/classes/debug',
-			excludes: ['**/R.class',
-			           '**/R$*.class',
-			           '**/*$ViewInjector*.*',
-			           '**/BuildConfig.*',
-			           '**/Manifest*.*']
-	)
+    classDirectories = fileTree(
+            dir: '../app/build/intermediates/classes/debug',
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/*$ViewInjector*.*',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+    )
 
-	additionalSourceDirs = files(coverageSourceDirs)
-	sourceDirectories = files(coverageSourceDirs)
-	executionData = files('../app/build/jacoco/testDebug.exec')
+    additionalSourceDirs = files(coverageSourceDirs)
+    sourceDirectories = files(coverageSourceDirs)
+    executionData = files('../app/build/jacoco/testDebug.exec')
 
-	reports {
-		xml.enabled = true
-		html.enabled = true
-	}
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 
 }
 buildscript {
-	ext.kotlin_version = '1.0.0'
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-	}
+    ext.kotlin_version = '1.0.0'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
