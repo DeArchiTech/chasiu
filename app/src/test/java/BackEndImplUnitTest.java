@@ -126,11 +126,13 @@ public class BackEndImplUnitTest {
     public void testGetUsers() {
 
         //Enqueue Server Response
+        //TODO: Add A List of Users User To MockResponse
         this.server.enqueue(this.userMockResponse);
         JSONObject searchParm = null;
 
         try{
-            searchParm = new JSONObject("");
+            searchParm = new JSONObject();
+            searchParm.put("id" , "0");
         }catch (Exception e){
 
         }
@@ -150,7 +152,5 @@ public class BackEndImplUnitTest {
         testSubscriber.assertCompleted();
         testSubscriber.assertReceivedOnNext(Arrays.asList(listOfUsers));
     }
-
-
 
 }
